@@ -44,6 +44,42 @@
             font-size: 14px;
         }
 
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
         .input-section {
             margin-bottom: 30px;
         }
@@ -264,8 +300,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎓 DOMjudge 账号生成器</h1>
-        <p class="subtitle">快速生成队伍文件和账号文件</p>
+        <h1>🎓 DOMjudge 工具集</h1>
+        <p class="subtitle">快速生成队伍账号文件和题目包</p>
+        
+        <div class="nav-section">
+            <div class="nav-buttons">
+                <a href="/" class="nav-btn active">👥 账号生成</a>
+                <a href="/problem" class="nav-btn">📝 题目包生成</a>
+            </div>
+        </div>
 
         <div class="instructions">
             <h3>📋 使用说明</h3>

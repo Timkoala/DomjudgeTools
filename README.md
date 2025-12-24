@@ -1,4 +1,4 @@
-# DOMjudge 账号生成器
+# DOMjudge 工具集
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.6+-blue.svg" alt="Python Version">
@@ -6,17 +6,27 @@
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
 </p>
 
-一个简单易用的 DOMjudge 队伍账号生成工具，可以根据学号和姓名快速生成标准格式的 teams.tsv 和 accounts.tsv 文件。
+一个简单易用的 DOMjudge 工具集，包含：
+- 📄 **队伍账号生成器** - 根据学号和姓名快速生成标准格式的 teams.tsv 和 accounts.tsv 文件
+- 📦 **题目包生成器** - 根据题面PDF和测试数据生成符合DOMjudge格式的题目压缩包
 
 ## ✨ 功能特性
 
+### 账号生成器
 - 📁 **多格式支持** - 支持文本文件(.txt)和Excel文件(.xlsx/.xls)
 - 👁️ **实时预览** - 生成前可预览文件内容，确保数据正确
 - ⬇️ **一键下载** - 自动打包为 ZIP 文件，方便使用
 - 🔒 **安全密码** - 自动生成8位纯数字密码（1-9，不含0）
+- 🚀 **双模式运行** - 支持命令行和 Web 界面两种使用方式
+
+### 题目包生成器
+- 📄 **PDF解析** - 自动从题面PDF中提取题目名称、时间限制、内存限制
+- 🧠 **智能补全** - 未填写的信息自动从PDF解析，解析失败使用默认值
+- 📊 **测试数据管理** - 支持正式测试数据和样例数据分类
+- 🎨 **可选配置** - 支持自定义气球颜色等可选项
+- ✅ **格式验证** - 自动验证数据完整性和文件配对
 - 🎨 **现代化界面** - 简洁美观的 Web 界面
 - 📱 **响应式设计** - 支持桌面端和移动端
-- 🚀 **双模式运行** - 支持命令行和 Web 界面两种使用方式
 
 ## 文件格式说明
 
@@ -73,16 +83,61 @@ python generator.py input.txt
 
 这将在同目录下生成 `teams.tsv` 和 `accounts.tsv` 文件。
 
+## 题目包格式说明
+
+题目包生成器根据 DOMjudge 标准格式生成压缩包，包含以下文件：
+
+### 生成的压缩包结构
+```
+题目名称_problem.zip
+├── domjudge-problem.ini    # 题目基本配置
+├── problem.pdf            # 题目题面文档
+├── problem.yaml           # 题目详细配置
+└── data/                  # 测试数据目录
+    ├── secret/            # 正式测试数据
+    │   ├── 1.in
+    │   ├── 1.ans
+    │   ├── 2.in
+    │   └── 2.ans
+    └── sample/            # 样例数据（可选）
+        ├── example1.in
+        └── example1.ans
+```
+
+### 配置文件说明
+
+#### domjudge-problem.ini
+```ini
+[problem]
+timelimit = 1.0
+color = '#FF0000'
+```
+
+#### problem.yaml
+```yaml
+name: 'A + B Problem'
+limits:
+  memory: 256
+```
+
+### 测试数据要求
+- 输入文件：`.in` 或 `.input` 扩展名
+- 输出文件：`.ans`、`.out` 或 `.output` 扩展名
+- 文件名包含 `sample` 或 `example` 的将归类为样例数据
+- 其他文件自动归类为正式测试数据
+
 ## 项目结构
 
 ```
 DomjudgeTools/
 ├── app.py                  # Flask Web 应用
-├── generator.py           # 核心生成逻辑
+├── generator.py           # 账号生成逻辑
+├── problem_generator.py   # 题目包生成逻辑
 ├── requirements.txt       # Python 依赖
 ├── README.md             # 说明文档
 └── templates/
-    └── index.html        # Web 界面模板
+    ├── index.html         # 账号生成界面
+    └── problem.html       # 题目包生成界面
 ```
 
 ## 技术栈
