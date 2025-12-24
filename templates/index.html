@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOMjudge 账号生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 12px 20px;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #e8e8e8;
+            border-color: #667eea;
+        }
+
+        .file-name {
+            margin-top: 8px;
+            color: #666;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-preview {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-preview:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-generate {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-generate:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            display: none;
+        }
+
+        .preview-section.show {
+            display: block;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .preview-header h3 {
+            color: #333;
+            font-size: 18px;
+        }
+
+        .student-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .preview-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .preview-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .preview-content {
+            background: white;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            white-space: pre;
+            overflow-x: auto;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border-left: 4px solid #c53030;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border-left: 4px solid #22543d;
+        }
+
+        .instructions {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 DOMjudge 账号生成器</h1>
+        <p class="subtitle">快速生成队伍文件和账号文件</p>
+
+        <div class="instructions">
+            <h3>📋 使用说明</h3>
+            <ul>
+                <li>上传文件或直接输入文本</li>
+                <li>📄 <strong>文本文件(.txt)</strong>：格式为学号[Tab]姓名，每行一个学生</li>
+                <li>📊 <strong>Excel文件(.xlsx/.xls)</strong>：前两列分别为学号和姓名，自动跳过空行</li>
+                <li>点击"预览"查看生成结果，或直接点击"生成并下载"</li>
+                <li>将自动生成 teams.tsv 和 accounts.tsv 文件</li>
+                <li>密码为8位纯数字（1-9），不含0</li>
+            </ul>
+        </div>
+
+        <div class="alert alert-error" id="errorAlert"></div>
+        <div class="alert alert-success" id="successAlert"></div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label>📁 上传文件：</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" accept=".txt,.xlsx,.xls" onchange="handleFileSelect(event)">
+                    <label for="fileInput" class="file-input-label">
+                        <span>点击选择文件或拖拽文件到此处</span>
+                        <br><small>支持 .txt / .xlsx / .xls 格式</small>
+                    </label>
+                </div>
+                <div class="file-name" id="fileName"></div>
+            </div>
+
+            <div class="input-group">
+                <label>✏️ 或直接输入文本：</label>
+                <textarea id="textInput" placeholder="示例格式：&#10;2307110101&#9;黄宇&#10;2307110103&#9;向燕萍&#10;2307110104&#9;邓诗榕"></textarea>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-preview" onclick="previewData()">👁️ 预览</button>
+                <button class="btn-generate" onclick="generateFiles()">⬇️ 生成并下载</button>
+            </div>
+        </div>
+
+        <div class="preview-section" id="previewSection">
+            <div class="preview-header">
+                <h3>📊 预览结果</h3>
+                <span class="student-count" id="studentCount"></span>
+            </div>
+
+            <div class="preview-box">
+                <h4>📄 teams.tsv (前5条)</h4>
+                <div class="preview-content" id="teamsPreview"></div>
+            </div>
+
+            <div class="preview-box">
+                <h4>🔑 accounts.tsv (前5条)</h4>
+                <div class="preview-content" id="accountsPreview"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = `已选择: ${file.name}`;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('textInput').value = e.target.result;
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function showAlert(type, message) {
+            const alertId = type === 'error' ? 'errorAlert' : 'successAlert';
+            const alert = document.getElementById(alertId);
+            alert.textContent = message;
+            alert.classList.add('show');
+            
+            // 隐藏其他类型的alert
+            const otherAlertId = type === 'error' ? 'successAlert' : 'errorAlert';
+            document.getElementById(otherAlertId).classList.remove('show');
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        function getFormData() {
+            const formData = new FormData();
+            const fileInput = document.getElementById('fileInput');
+            const textInput = document.getElementById('textInput').value;
+
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            } else if (textInput.trim()) {
+                formData.append('text_input', textInput);
+            } else {
+                return null;
+            }
+
+            return formData;
+        }
+
+        async function previewData() {
+            const formData = getFormData();
+            if (!formData) {
+                showAlert('error', '请上传文件或输入文本！');
+                return;
+            }
+
+            try {
+                const response = await fetch('/preview', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('studentCount').textContent = `共 ${data.student_count} 人`;
+                    document.getElementById('teamsPreview').textContent = data.teams_preview;
+                    document.getElementById('accountsPreview').textContent = data.accounts_preview;
+                    document.getElementById('previewSection').classList.add('show');
+                    showAlert('success', '预览成功！');
+                } else {
+                    showAlert('error', data.error || '预览失败');
+                }
+            } catch (error) {
+                showAlert('error', '网络错误：' + error.message);
+            }
+        }
+
+        async function generateFiles() {
+            const formData = getFormData();
+            if (!formData) {
+                showAlert('error', '请上传文件或输入文本！');
+                return;
+            }
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'domjudge_files.zip';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    showAlert('success', '文件生成成功！正在下载...');
+                } else {
+                    const data = await response.json();
+                    showAlert('error', data.error || '生成失败');
+                }
+            } catch (error) {
+                showAlert('error', '网络错误：' + error.message);
+            }
+        }
+
+        // 支持拖拽上传
+        const fileLabel = document.querySelector('.file-input-label');
+        
+        fileLabel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileLabel.style.borderColor = '#667eea';
+            fileLabel.style.background = '#e8e8e8';
+        });
+
+        fileLabel.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            fileLabel.style.borderColor = '#ccc';
+            fileLabel.style.background = '#f0f0f0';
+        });
+
+        fileLabel.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileLabel.style.borderColor = '#ccc';
+            fileLabel.style.background = '#f0f0f0';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('fileInput').files = files;
+                handleFileSelect({ target: { files: files } });
+            }
+        });
+    </script>
+</body>
+</html>
