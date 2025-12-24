@@ -27,21 +27,35 @@ def parse_excel_file(file_path):
     if not EXCEL_SUPPORT:
         raise ValueError("未安装 pandas 和 openpyxl，无法处理 Excel 文件。请运行: pip install pandas openpyxl")
     
-    try:
-        # 读取 Excel 文件，只读前两列
-        df = pd.read_excel(file_path, usecols=[0, 1], header=None)
-        students = []
-        
-        for index, row in df.iterrows():
-            if pd.notna(row[0]) and pd.notna(row[1]):
-                student_id = str(row[0]).strip()
-                name = str(row[1]).strip()
-                if student_id and name:
-                    students.append((student_id, name))
-        
-        return students
-    except Exception as e:
-        raise ValueError(f"解析 Excel 文件失败: {str(e)}")
+    students = []
+    
+    # 尝试多种方式读取Excel文件
+    engines = ['openpyxl', 'xlrd']
+    
+    for engine in engines:
+        try:
+            # 读取 Excel 文件，只读前两列
+            df = pd.read_excel(file_path, usecols=[0, 1], header=None, engine=engine)
+            
+            for index, row in df.iterrows():
+                if pd.notna(row[0]) and pd.notna(row[1]):
+                    # 确保正确处理数字类型的学号
+                    student_id = str(int(row[0]) if isinstance(row[0], (int, float)) and row[0] == int(row[0]) else row[0]).strip()
+                    # 处理姓名，确保是字符串
+                    name = str(row[1]).strip()
+                    
+                    if student_id and name and student_id != 'nan' and name != 'nan':
+                        students.append((student_id, name))
+            
+            if students:  # 如果成功解析到数据，就返回
+                return students
+                
+        except Exception as e:
+            if engine == engines[-1]:  # 如果是最后一个引擎还失败
+                raise ValueError(f"解析 Excel 文件失败: {str(e)}")
+            continue  # 尝试下一个引擎
+    
+    return students
 
 
 def parse_input_file(input_content):

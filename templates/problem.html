@@ -407,10 +407,10 @@
                 <div class="form-group">
                     <label for="testFiles">📊 测试数据文件 <span class="required">*</span></label>
                     <div class="file-input-wrapper">
-                        <input type="file" id="testFiles" name="test_files" multiple accept=".in,.ans,.out,.input,.output" required onchange="handleTestFilesSelect(event)">
+                        <input type="file" id="testFiles" name="test_files" multiple accept=".in,.ans,.out,.input,.output,.zip" required onchange="handleTestFilesSelect(event)">
                         <label for="testFiles" class="file-input-label">
                             <span>点击选择测试数据文件或拖拽文件到此处</span>
-                            <br><small>支持 .in/.ans/.out/.input/.output 格式，支持多文件选择</small>
+                            <br><small>支持 .in/.ans/.out/.input/.output 格式和 .zip 压缩包，支持多文件选择</small>
                         </label>
                     </div>
                     <div class="file-list" id="testFilesList"></div>

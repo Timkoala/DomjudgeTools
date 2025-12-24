@@ -16,6 +16,12 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     """主页"""
+    return render_template('home.html')
+
+
+@app.route('/accounts')
+def accounts():
+    """账号生成页面"""
     return render_template('index.html')
 
 
@@ -285,9 +291,11 @@ def problem_generate():
             problem_info, pdf_content, test_data
         )
         
-        # 生成文件名
-        safe_name = problem_info['name'].replace(' ', '_').replace('/', '_')
-        filename = f"{safe_name}_problem.zip"
+        # 生成文件名（使用题目名称作为压缩包名）
+        safe_name = problem_info['name'].replace(' ', '_').replace('/', '_').replace('\\', '_')
+        # 移除特殊字符
+        safe_name = ''.join(c for c in safe_name if c.isalnum() or c in ('_', '-'))
+        filename = f"{safe_name}.zip"
         
         return send_file(
             io.BytesIO(package_content),

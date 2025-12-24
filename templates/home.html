@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOMjudge 工具集</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 60px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 50px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .tool-card {
+            background: #f8fafc;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+            background: #f0f7ff;
+        }
+
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .tool-title {
+            color: #2d3748;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .tool-description {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .features {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .features h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .feature-icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #718096;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 40px 30px;
+            }
+            
+            .tool-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎓</div>
+        <h1>DOMjudge 工具集</h1>
+        <p class="subtitle">
+            专业的 DOMjudge 竞赛管理工具套件<br>
+            提供队伍账号生成和题目包制作功能
+        </p>
+
+        <div class="tools-grid">
+            <a href="/accounts" class="tool-card">
+                <span class="tool-icon">👥</span>
+                <div class="tool-title">队伍账号生成器</div>
+                <div class="tool-description">
+                    根据学号和姓名快速生成标准格式的 teams.tsv 和 accounts.tsv 文件。
+                    支持文本和Excel文件导入，一键生成安全密码。
+                </div>
+            </a>
+
+            <a href="/problem" class="tool-card">
+                <span class="tool-icon">📦</span>
+                <div class="tool-title">题目包生成器</div>
+                <div class="tool-description">
+                    根据题面PDF和测试数据生成符合DOMjudge格式的题目压缩包。
+                    智能解析题目信息，自动配置测试数据。
+                </div>
+            </a>
+        </div>
+
+        <div class="features">
+            <h3>✨ 主要特性</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feature-icon">📁</span>
+                    多格式文件支持
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🧠</span>
+                    智能信息解析
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">👁️</span>
+                    实时预览功能
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔒</span>
+                    安全密码生成
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">⬇️</span>
+                    一键下载打包
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    标准格式验证
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            DOMjudge Tools v2.0 | 专为竞赛管理而设计
+        </div>
+    </div>
+</body>
+</html>

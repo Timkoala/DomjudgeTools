@@ -132,7 +132,7 @@ class ProblemGenerator:
     
     def parse_test_data(self, uploaded_files: List[Tuple[str, bytes]]) -> Dict[str, List[Tuple[str, bytes]]]:
         """
-        解析上传的测试数据文件
+        解析上传的测试数据文件，支持ZIP压缩包
         
         Args:
             uploaded_files: 上传文件列表，格式为 [(filename, content), ...]
@@ -145,20 +145,75 @@ class ProblemGenerator:
             'sample': []
         }
         
-        # 按文件名分类
+        # 展开所有文件（包括解压ZIP文件）
+        expanded_files = []
+        
         for filename, content in uploaded_files:
             filename_lower = filename.lower()
             
-            if 'sample' in filename_lower or 'example' in filename_lower:
-                data['sample'].append((filename, content))
+            if filename_lower.endswith('.zip'):
+                # 解压ZIP文件
+                try:
+                    expanded_files.extend(self._extract_zip_files(filename, content))
+                except Exception as e:
+                    print(f"解压ZIP文件 {filename} 失败: {e}")
+                    continue
             else:
-                data['secret'].append((filename, content))
+                expanded_files.append((filename, content))
+        
+        # 按文件名分类
+        for filename, content in expanded_files:
+            filename_lower = filename.lower()
+            
+            # 只处理测试数据文件
+            if filename_lower.endswith(('.in', '.ans', '.out', '.input', '.output')):
+                if 'sample' in filename_lower or 'example' in filename_lower:
+                    data['sample'].append((filename, content))
+                else:
+                    data['secret'].append((filename, content))
         
         # 对文件进行配对处理 (.in 和 .ans/.out)
         data['secret'] = self._pair_test_files(data['secret'])
         data['sample'] = self._pair_test_files(data['sample'])
         
         return data
+    
+    def _extract_zip_files(self, zip_filename: str, zip_content: bytes) -> List[Tuple[str, bytes]]:
+        """
+        解压ZIP文件并提取其中的测试数据文件
+        
+        Args:
+            zip_filename: ZIP文件名
+            zip_content: ZIP文件内容
+            
+        Returns:
+            解压出的文件列表
+        """
+        extracted_files = []
+        
+        try:
+            with zipfile.ZipFile(io.BytesIO(zip_content), 'r') as zip_file:
+                for file_info in zip_file.infolist():
+                    # 跳过目录
+                    if file_info.is_dir():
+                        continue
+                    
+                    filename = os.path.basename(file_info.filename)
+                    filename_lower = filename.lower()
+                    
+                    # 只提取测试数据文件
+                    if filename_lower.endswith(('.in', '.ans', '.out', '.input', '.output')):
+                        try:
+                            file_content = zip_file.read(file_info)
+                            extracted_files.append((filename, file_content))
+                        except Exception as e:
+                            print(f"读取ZIP中的文件 {filename} 失败: {e}")
+                            continue
+        
+        except Exception as e:
+            raise Exception(f"解压ZIP文件失败: {e}")
+        
+        return extracted_files
     
     def _pair_test_files(self, files: List[Tuple[str, bytes]]) -> List[Tuple[str, bytes]]:
         """
